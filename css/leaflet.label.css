@@ -1,0 +1,52 @@
+.leaflet-label {	
+	border: solid 1px #B05E0A;	
+	background-clip: padding-box;	
+	border-radius: 2px;
+	background: #FF7600;
+	color: #fff;
+	display: block;
+	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	/*padding: 0px 6px;*/
+	position: absolute;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	white-space: nowrap;
+	z-index: 6;
+}
+
+.leaflet-label.leaflet-clickable {
+	cursor: pointer;
+}
+
+.leaflet-label span {
+	display: inline-block;	
+	padding: 0 4px;
+}
+
+.leaflet-label a {
+	display: inline-block;	
+	border-left: solid 2px #B05E0A;
+}
+
+.leaflet-label a img {
+	margin: 3px 5px -2px;
+}
+
+.leaflet-label.highlight {
+	border-color: #860D00;
+	background-color: #B73103;
+}
+
+.leaflet-label.highlight a {
+	border-left-color: #860D00;
+}
+.leaflet-label.straightLable {
+	background-color: #036ED9;
+	border-color: #0259A6;
+}
+.leaflet-label.straightLable a{
+	border-left-color: #0259A6;
+}

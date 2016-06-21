@@ -1,0 +1,41 @@
+<nav>
+	<a class='button-logo' href='/'></a>
+	<div class="trail-name-block"><input type="text" id="trailName" class="trail-name" placeholder="Name of your trail..."></div>
+	<a class='button-add-trail' id="btnFinishTrail" href='javascript:void(0);'>Finish trail</a>
+</nav>
+
+<div class='toolbar'>
+	<div class='btn button-draw color-snapped'>
+		draw
+	</div>
+	<div class='button-snap color-snapped'>
+		<input type="checkbox" name="snap" value="snap" checked="checked">snap to paths
+	</div>
+	<div class='btn button-delete-all'>
+		delete all
+	</div>
+	<div class='search'>
+		<input type="text" id="tbxSearch" placeholder="Center map at...">
+	</div>
+</div>
+
+<div id="map"></div>
+
+
+
+
+
+
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/mapbox.js/mapbox.js"></script>
+<script type="text/javascript" src="bower_components/polyline/src/polyline.js"></script>
+<script type="text/javascript" src="bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+<script type="text/javascript" src="bower_components/async/dist/async.min.js"></script>
+<script type="text/javascript" src="bower_components/jquery-autocomplete-fix/dist/jquery.autocomplete.min.js"></script>
+
+<script type="text/javascript" src="js/directionsAPI.js"></script>
+<script type="text/javascript" src="js/intersectionsAPI.js"></script>
+<script type="text/javascript" src="js/label.js"></script>
+<script type="text/javascript" src="js/segment.js"></script>
+<script type="text/javascript" src="js/routeLayer.js"></script>
+<script type="text/javascript" src="js/mapEngine.js"></script>

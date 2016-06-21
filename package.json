@@ -1,0 +1,13 @@
+{
+  "name": "trailcatalogserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tcs-server.js",
+  "scripts": {},
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0"
+  }
+}

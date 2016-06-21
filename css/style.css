@@ -1,0 +1,361 @@
+/* Atomic elements  */
+
+	.vertical-align {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	}
+
+	.overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 100;
+	}
+
+	.relative {
+	position: relative;
+	}
+
+/* Resets  */
+
+	body, h1, h2, h3, h4, h5, h6, p {
+		margin: 0;
+		padding: 0;
+	}
+
+	input:focus, select:focus, textarea:focus, button:focus {
+	    outline: none;
+	}
+
+/* General  */
+
+	body {
+	    font-family: 'Open Sans';
+	    background-color: #EAEAEA;
+	}
+
+	nav {
+		width: 100%;
+		height: 60px;
+		line-height: 60px;
+		background-color: #2A353C;
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;		
+	}
+
+	nav a {
+		text-decoration: none;
+		text-transform: uppercase;
+		font-size: 12px;
+		display: inline-block;
+	}
+
+	.button-logo {
+		width: 60px;
+		height: 60px;
+		background-color: #2A353C;
+		border-right: 1px solid rgba(255,255,255,.1);
+		background-image: url(../img/logo.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: center;
+	}
+
+	.button-add-trail {
+		background-color: #2DB200;
+		height: 60px;
+		color: #fff;		
+		padding: 0 30px 0 30px;
+	}
+
+/* Trail List  */
+
+	.trail-list {
+		padding: 40px;
+		margin: 0;
+		list-style: none;
+	}
+
+	.trail-list li {
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+		height: 100px;
+		background-color: #fff;
+		border-left: 1px solid #DDDDDD;
+		border-bottom: 1px solid #DDDDDD;
+		border-right: 1px solid #DDDDDD;
+
+	}
+
+	.trail-list li:first-child{
+		border-top: 1px solid #DDDDDD;
+	}
+
+	.trail-list li div {
+		padding: 20px 40px 0 40px;	
+		font-size: 24px;
+		font-weight: bold;
+		border-left: 1px solid #DDDDDD;
+	}
+
+	.trail-list li div span{
+		width: 100%;
+		display: block;
+		text-transform: uppercase;
+		font-size: 10px;
+	}
+
+	.trail-title {
+		width: 30%;
+		margin-right: auto;
+	}
+
+	.button-delete-home {
+		width: 20px;
+		background-image: url(../img/delete.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: center;
+		padding: 0;
+	}
+
+	.button-edit-home {
+		width: 20px;
+		background-image: url(../img/edit.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: center;
+		padding: 0;
+	}
+
+	.info-distance{
+		width: 150px;
+	}
+
+	.info-elevation {
+		width: 150px;
+	}
+
+/* Toolbar  */
+
+	.toolbar {
+		height: 50px;
+		line-height: 50px;
+		text-transform: uppercase;
+		color: #fff;
+		font-size: 12px;
+		display: flex;
+		margin: 40px;
+	}
+
+	.toolbar div {
+		border-right: 1px solid rgba(255,255,255,.15);
+		padding: 0 20px 0 20px;
+	}
+
+	.button-draw {
+		background-image: url(../img/edit-draw.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: 15px center;
+		width: 70px;
+		text-indent: 20px;
+	}
+
+	.button-delete-all {
+		background-image: url(../img/edit-delete.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: 15px center;
+		width: 100px;
+		text-indent: 20px;
+		background-color: #2A353C;
+	}
+
+	.toolbar .search {
+		padding: 0;
+		background-color: #2A353C;
+	}	
+	.toolbar .search input{
+		width: 160px;
+		background-color: rgba(255,255,255,0);
+		height: 50px;
+		color: #fff;
+		border: 0;
+		background-image: url(../img/search.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: 185px center;
+		padding: 1px 30px 1px 20px;
+	}
+
+	/*.toolbar .search{
+		margin-right: auto;
+		padding-right: 20px;
+		background-color: #2A353C;
+	}
+
+	.toolbar .search input {
+		background-color: rgba(255,255,255,0);
+		height: 50px;
+		color: #fff;
+		border: 0;
+		background-image: url(../img/search.svg);
+		background-repeat: no-repeat;
+		background-size: 15px 15px;
+		background-position: right center;
+	}*/
+
+	div.color-snapped{
+		background-color: #FF8000;
+	}
+
+	div.color-unsnapped{
+		background-color: #006DD9;
+	}
+
+/* Markers */
+
+	.marker-box {
+		margin: 40px;
+	}
+
+	.marker {
+		display: inline;
+		height: 20px;
+		padding: 2px 4px 2px 4px;
+		position: relative;
+		border-radius: 5px;
+		font-size: 9px;
+		letter-spacing: 1px;
+		font-weight: 500;
+		color: #fff;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.marker b{
+		padding-right: 20px;
+	}
+
+	.marker b:after{
+		content:"Mi";
+		font-weight: 500;					
+	}
+
+	/* inside border */
+	.marker:before {
+		content:"";
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		margin-left: -5px;
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-top: 4px solid transparent;
+	}
+
+	/* outside border */
+	.marker:after {
+		content:"";
+		z-index: 100;
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		margin-left: -4px;
+		border-left: 3px solid transparent;
+		border-right: 3px solid transparent;
+		border-top: 3px solid transparent;
+	}
+
+	/* start marker */
+	.marker-start {
+		background-color: #000;
+		border: 1px solid #000;
+		text-transform: uppercase;
+	}
+
+	.marker-start:before {
+		border-top-color: #000;
+	}
+
+	/* snapped marker */
+	.marker-distance {
+		border: 1px solid #B25900;
+		background-color: #FF8000;
+	}
+
+	.marker-distance:before{
+		border-top-color: #B25900;
+	}
+
+	.marker-distance:after{
+		border-top-color: #FF8000;
+	}
+
+	/* unsnapped marker */
+	.marker-distance-unsnapped {
+		border: 1px solid #0059B2;
+		background-color: #006DD9;
+	}
+
+	.marker-distance-unsnapped:before{
+		border-top-color: #006DD9;
+	}
+
+	.marker-distance-snapped:after{
+		border-top-color: #0059B2;
+	}				
+
+	.button-delete-segment {
+		background-image: url(../img/edit-delete.svg);
+		background-repeat: no-repeat;
+		background-size: 12px 12px;
+		background-position: center;
+		width: 20px;
+		border-left: 1px solid rgba(0,0,0,.15);
+		height: 100%;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	/* Snapped Map Marker */
+	.marker-map {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		border: 1px solid #B25900;
+		background-color: #FF8000;
+	}
+
+	.marker-map-drag {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		border: 1px solid #B25900;
+		background-color: #D30203;
+	}
+
+	.marker-map-unsnapped {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		border: 1px solid #0059B2;
+		background-color: #006DD9;
+	}
+
+/* Detail */
+
+	#detail nav {
+		background-color: #fff;
+	}
+
+

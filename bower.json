@@ -1,0 +1,25 @@
+{
+  "name": "TrailCatalog",
+  "authors": [
+    "ArsenyN <arseny.n@gmail.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "mapbox.js": "^2.4.0",
+    "normalize-css": "normalize.css#^4.1.1",
+    "jquery": "^2.2.4",
+    "polyline": "^0.2.0",
+    "async": "^1.5.2",
+    "Leaflet.label": "^0.2.1",
+    "jquery-autocomplete-fix": "^2.0.1"
+  }
+}
