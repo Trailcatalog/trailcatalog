@@ -3,7 +3,7 @@
 var tcRouteLayer = L.FeatureGroup.extend({
 	options: {
 		snap2roads: true,
-		intersectionRaduis: 25
+		intersectionRaduis: 12
 	},
 	waypoints: [],
 	routeSegments: null,
@@ -118,8 +118,8 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		if (!this.waypoints[this.waypoints.length - 1].getLatLng().equals(latLng)) {
 			if (intersection) {
 				this.straightSegment.addPoint(intersection.latLng);
-				this.straightSegment.endDraw();
 				var marker = this._addWaypoint(intersection.latLng);
+				this.straightSegment.endDraw(marker);
 				marker.relatedSegments.push(this.straightSegment);
 				this.straightSegment = null;
 			} else {
@@ -269,7 +269,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		};
 
 		// console.log(result);
-		// console.log(JSON.stringify(result));
+		console.log(JSON.stringify(result));
 		return result;
 	},
 

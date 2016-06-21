@@ -18,13 +18,14 @@ var tcSegment = L.FeatureGroup.extend({
 		labelCssClass: '',
 		state: 'on'
 	},
-	initialize: function(markerStart, markerEnd, directionsAPI, options) {
+	initialize: function(markerStart, markerEnd, directionsAPI, options, path) {
 		L.setOptions(this, options);
 		L.FeatureGroup.prototype.initialize.call(this, [], options);
 
 		this.markerStart = markerStart;
 		this.markerEnd = markerEnd;
 		this.directionsAPI = directionsAPI;
+		this.path = path;
 
 		this._draw();
 	},
@@ -34,9 +35,14 @@ var tcSegment = L.FeatureGroup.extend({
 		this.line = null;
 		this.label = null;
 
-		var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
-		this.line = L.polyline(waypoints, this.options.routeStyle).addTo(this);
+		if (!this.path) {
+			var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
+			this.line = L.polyline(waypoints, this.options.routeStyle).addTo(this);
+		} else {
+			this.line = L.polyline(this.path, this.options.routeStyle).addTo(this);
+		}
 		this._calcDistance();
+
 	},
 	_calcDistance: function() {
 		var latLngs = this.line.getLatLngs();
@@ -94,16 +100,21 @@ var tcRouteSegment = tcSegment.extend({
 		this.line = null;
 		this.label = null;
 
-		var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
-		this.directionsAPI.getRoute(waypoints, function(err, data) {
-			if (!err && data.length) {
-				data[0] = waypoints[0];
-				data[data.length - 1] = waypoints[1];
+		if (!this.path) {
+			var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
+			this.directionsAPI.getRoute(waypoints, function(err, data) {
+				if (!err && data.length) {
+					data[0] = waypoints[0];
+					data[data.length - 1] = waypoints[1];
 
-				self.line = L.polyline(data, self.options.routeStyle).addTo(self);
-				self._calcDistance();
-			}
-		});
+					self.line = L.polyline(data, self.options.routeStyle).addTo(self);
+					self._calcDistance();
+				}
+			});
+		} else {
+			self.line = L.polyline(this.path, self.options.routeStyle).addTo(self);
+			self._calcDistance();
+		}
 	}
 });
 
@@ -115,17 +126,23 @@ var tcStraightSegment = tcSegment.extend({
 			'opacity': 0.75
 		},
 		labelCssClass: 'straightLable',
-	},	
+	},
 	points: [],
 
 	addPoint: function(latLng) {
 		this.line.addLatLng(latLng);
 	},
-	endDraw: function() {
+	endDraw: function(marker) {
+		this.markerEnd = marker;
 		this._calcDistance();
 	},
 	_draw: function() {
-		this.line = L.polyline([this.markerStart.getLatLng()], this.options.routeStyle).addTo(this);
+		if (!this.path) {
+			this.line = L.polyline([this.markerStart.getLatLng()], this.options.routeStyle).addTo(this);
+		} else {
+			this.line = L.polyline(this.path, this.options.routeStyle).addTo(this);
+			this._calcDistance();
+		}
 	}
 });
 
@@ -145,9 +162,9 @@ L.tc.restoreSegment = function(isStraight, markerStart, markerEnd, path, directi
 	var segment;
 
 	if (isStraight) {
-		// segment = new tcStraightSegment(markerStart, markerEnd, directionsAPI);
+		segment = new tcStraightSegment(markerStart, markerEnd, directionsAPI, {}, path);
 	} else {
-		segment = new tcRouteSegment(markerStart, markerEnd, directionsAPI);
+		segment = new tcRouteSegment(markerStart, markerEnd, directionsAPI, {}, path);
 	}
 
 	return segment;
