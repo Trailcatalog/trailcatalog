@@ -22,14 +22,18 @@ var mapEngine = {
 		});
 
 		this.intersectionsAPI = L.tc.IntersectionsAPI(this.map);
+		this.surfaceAPI = L.tc.SurfaceAPI();
 
-		this.routeLayer = L.tc.RouteLayer(this.directionsAPI, this.intersectionsAPI).addTo(this.map);
+		this.routeLayer = L.tc.RouteLayer(this.directionsAPI, this.intersectionsAPI, this.surfaceAPI).addTo(this.map);
 
 		this.setupGeocoding();
 
 		$("#btnFinishTrail").on('click', $.proxy(this.saveTrail, this));
 		$("#btnClearAll").on('click', $.proxy(this.clearAll, this));
 
+		if (typeof trailData !== "undefined") {
+			this.restoreTrail();
+		}
 	},
 	setSnap: function(snap) {
 		this.routeLayer.options.snap2roads = snap;
@@ -79,18 +83,26 @@ var mapEngine = {
 		var data = this.routeLayer.getRouteForSave();
 		var title = $("#trailName").val();
 		data.title = title;
-		console.log(data);
+		var url = '/api/saveTrail';
+		if (typeof trail_id !== "undefined")
+			url += "/" + trail_id;
 		$.ajax({
-			url: '/api/saveTrail',
+			url: url,
 			type: 'post',
 			data: JSON.stringify(data),
 			contentType : 'application/json'			
-		}, function(result) {
-			console.log(result);
+		}).success(function(result) {			
+			if (result)
+				window.location = "/trail/" + result;
 		});
 	},
 	clearAll: function() {
 		this.routeLayer.clearAll();
+	},
+	restoreTrail: function() {
+		this.routeLayer.restoreRouteFromJSON(trailData);
+		if (trailData.trail.title && trailData.trail.title.length) 
+			$("#trailName").val(trailData.trail.title);
 	}
 };
 

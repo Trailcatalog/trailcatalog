@@ -12,6 +12,7 @@
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "pg": "^5.2.0",
+    "request": "^2.72.0",
     "wkx": "^0.2.0"
   }
 }

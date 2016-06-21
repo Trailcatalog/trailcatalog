@@ -7,12 +7,13 @@ var tcRouteLayer = L.FeatureGroup.extend({
 	},
 	waypoints: [],
 	routeSegments: null,
-	initialize: function(directionsAPI, intersectionsAPI, options) {
+	initialize: function(directionsAPI, intersectionsAPI, surfaceAPI, options) {
 		L.setOptions(this, options);
 		L.FeatureGroup.prototype.initialize.call(this, []);
 
 		this.directionsAPI = directionsAPI;
 		this.intersectionsAPI = intersectionsAPI;
+		this.surfaceAPI = surfaceAPI;
 
 		this.routeSegments = L.featureGroup().addTo(this);
 		this.routeWaypoints = L.featureGroup().addTo(this);
@@ -93,7 +94,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			else
 				var wpStart = this.waypoints[this.waypoints.length - 2];
 			var wpEnd = this.waypoints[this.waypoints.length - 1];
-			var segment = L.tc.RouteSegment(wpStart, wpEnd, this.directionsAPI);
+			var segment = L.tc.RouteSegment(wpStart, wpEnd, this.directionsAPI, this.surfaceAPI);
 
 			wpStart.relatedSegments.push(segment);
 			wpEnd.relatedSegments.push(segment);
@@ -113,7 +114,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			var startWp = this.waypoints[this.waypoints.length - 1];
 			if (typeof prevWaypointIndex !== "undefined")
 				startWp = this.waypoints[prevWaypointIndex];
-			this.straightSegment = L.tc.StraightSegment(startWp).addTo(this.routeSegments);
+			this.straightSegment = L.tc.StraightSegment(startWp, this.surfaceAPI).addTo(this.routeSegments);
 			this.straightSegment.on('removed', this._segmentRemoved, this);
 			this.waypoints[this.waypoints.length - 1].relatedSegments.push(this.straightSegment);
 		}
@@ -243,9 +244,11 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		var segments = {
 			"type": "FeatureCollection",
 			"features": []
-		};
+		};		
 
 		var sLayers = this.routeSegments.getLayers();
+		var distance = 0;
+		var elevation = 0;
 		for (var i = 0; i < sLayers.length; i++) {
 			var segment = sLayers[i].line.toGeoJSON();
 			if (sLayers[i] instanceof tcRouteSegment)
@@ -259,6 +262,8 @@ var tcRouteLayer = L.FeatureGroup.extend({
 				segment.properties["markerEnd"] = L.stamp(sLayers[i].markerEnd);
 
 			segments.features.push(segment);
+			distance += sLayers[i].getDistance();			
+			elevation += sLayers[i].getElevation();
 		}
 
 		var waypoints = this.routeWaypoints.toGeoJSON();
@@ -269,7 +274,9 @@ var tcRouteLayer = L.FeatureGroup.extend({
 
 		var result = {
 			waypoints: waypoints,
-			segments: segments
+			segments: segments,
+			distance: distance,
+			elevation: Math.round(elevation)
 		};
 
 		// console.log(result);
@@ -310,7 +317,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			var markerEnd = wpHash[segments.features[i].properties.markerEnd];
 			var path = sLayers[i].getLatLngs();
 
-			var segment = L.tc.restoreSegment(isStraight, markerStart, markerEnd, path, this.directionsAPI);
+			var segment = L.tc.restoreSegment(isStraight, markerStart, markerEnd, path, this.directionsAPI, this.surfaceAPI);
 			this.routeSegments.addLayer(segment);
 			segment.on('removed', this._segmentRemoved, this);
 			markerStart.relatedSegments.push(segment);
