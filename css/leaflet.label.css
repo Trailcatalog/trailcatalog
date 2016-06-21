@@ -1,20 +1,24 @@
 .leaflet-label {	
-	border: solid 1px #B05E0A;	
+	border: solid 1px #B25900;	
 	background-clip: padding-box;	
-	border-radius: 2px;
-	background: #FF7600;
+	border-radius: 5px;
+	background: #FF8000;
 	color: #fff;
 	display: block;
-	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	/*padding: 0px 6px;*/
+	font-family: "Open Sans";	
+	font-size: 9px;
+	letter-spacing: 1px;
+	font-weight: 500;
+	/*padding: 2px 4px;*/
 	position: absolute;
 	-webkit-user-select: none;
-	   -moz-user-select: none;
-	    -ms-user-select: none;
-	        user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 	white-space: nowrap;
 	z-index: 6;
+	height: 20px;
+	line-height: 9px;
 }
 
 .leaflet-label.leaflet-clickable {
@@ -23,16 +27,19 @@
 
 .leaflet-label span {
 	display: inline-block;	
-	padding: 0 4px;
+	padding: 0 6px;
+	position: relative;
+	top: -5px;
 }
 
 .leaflet-label a {
 	display: inline-block;	
-	border-left: solid 2px #B05E0A;
+	border-left: solid 1px #B25900;	
 }
 
+
 .leaflet-label a img {
-	margin: 3px 5px -2px;
+	margin: 3px;	
 }
 
 .leaflet-label.highlight {
@@ -49,4 +56,10 @@
 }
 .leaflet-label.straightLable a{
 	border-left-color: #0259A6;
+} 
+
+.leaflet-label.marker-start span{
+	top: 4px;
+	padding: 0 5px;
 }
+

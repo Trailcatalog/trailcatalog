@@ -98,6 +98,8 @@ var mapEngine = {
 $(function() {
 	mapEngine.init();
 
+	$("#cbxSnap2Roads").prop('checked', true);
+
 	$("#cbxSnap2Roads").on('change', function() {
 		mapEngine.setSnap($(this).is(":checked"));
 	});

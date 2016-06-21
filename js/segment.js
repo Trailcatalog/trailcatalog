@@ -6,7 +6,7 @@ var tcSegment = L.FeatureGroup.extend({
 
 	options: {
 		routeStyle: {
-			'color': '#FF7600',
+			'color': '#FF8000',
 			'weight': 4,
 			'opacity': 0.75
 		},
@@ -64,7 +64,7 @@ var tcSegment = L.FeatureGroup.extend({
 		});
 
 		var distanceInMiles = Math.round(distance / 10 * 0.621371) / 100; // convert meters to miles
-		this.label.setContent(distanceInMiles + "mi");
+		this.label.setContent(distanceInMiles + " Mi");
 		this.label.setLatLng(center);
 		this.addLayer(this.label);
 
@@ -125,15 +125,20 @@ var tcStraightSegment = tcSegment.extend({
 			'weight': 4,
 			'opacity': 0.75
 		},
+		endMarkerIcon: L.divIcon({
+			className: 'marker-map-unsnapped'
+		}),
 		labelCssClass: 'straightLable',
-	},
-	points: [],
+	},	
+	tempEndMarker: null,
 
 	addPoint: function(latLng) {
 		this.line.addLatLng(latLng);
+		this._setTempEndMarker();
 	},
 	endDraw: function(marker) {
 		this.markerEnd = marker;
+		this._clearTempEndMarker();
 		this._calcDistance();
 	},
 	_draw: function() {
@@ -142,6 +147,21 @@ var tcStraightSegment = tcSegment.extend({
 		} else {
 			this.line = L.polyline(this.path, this.options.routeStyle).addTo(this);
 			this._calcDistance();
+		}
+	},
+	_setTempEndMarker: function() {
+		this._clearTempEndMarker();
+		var points = this.line.getLatLngs();
+		if (points.length) {
+			this.tempEndMarker = L.marker(points[points.length - 1], {
+				icon: this.options.endMarkerIcon
+			}).addTo(this);
+		}
+	},
+	_clearTempEndMarker: function() {
+		if (this.tempEndMarker) {
+			this.removeLayer(this.tempEndMarker);
+			this.tempEndMarker = null;
 		}
 	}
 });

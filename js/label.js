@@ -2,13 +2,13 @@
 
 var tcLabel = L.Label.extend({
 
-	onAdd: function() {		
+	onAdd: function() {
 		L.Label.prototype.onAdd.apply(this, arguments);
 	},
 
 	onRemove: function() {
 		if (this.trashLink)
-				L.DomEvent.removeListener(this.trashLink, 'click', this._trashIconClicked);
+			L.DomEvent.removeListener(this.trashLink, 'click', this._trashIconClicked);
 
 		L.Label.prototype.onRemove.apply(this, arguments);
 	},
@@ -33,14 +33,17 @@ var tcLabel = L.Label.extend({
 			var span = L.DomUtil.create('span', '', this._container);
 			span.innerHTML = this._content;
 
-			if (this.trashLink)
-				L.DomEvent.removeListener(this.trashLink, 'click', this._trashIconClicked);
-			
-			this.trashLink = L.DomUtil.create('a', '', this._container);
-			this.trashLink.setAttribute('href', 'javascript:void(0);')
-			this.trashLink.innerHTML = '<img src="img/trash.png" width="8" height="13"/>';
+			if (this.options.cssClass != "marker-start") {
 
-			L.DomEvent.addListener(this.trashLink, 'click', this._trashIconClicked, this);
+				if (this.trashLink)
+					L.DomEvent.removeListener(this.trashLink, 'click', this._trashIconClicked);
+
+				this.trashLink = L.DomUtil.create('a', '', this._container);
+				this.trashLink.setAttribute('href', 'javascript:void(0);')
+				this.trashLink.innerHTML = '<img src="img/edit-delete.svg" width="12" height="12"/>';
+
+				L.DomEvent.addListener(this.trashLink, 'click', this._trashIconClicked, this);
+			}
 
 			this._prevContent = this._content;
 
@@ -84,7 +87,7 @@ var tcLabel = L.Label.extend({
 		L.DomEvent.stopPropagation(e);
 
 		self.fire('remove', e);
-		this.setHighlight(true);		
+		this.setHighlight(true);
 	}
 });
 

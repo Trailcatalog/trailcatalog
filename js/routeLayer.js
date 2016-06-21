@@ -74,6 +74,9 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		marker.relatedSegments = [];
 		this.waypoints.push(marker);
 
+		if (this.waypoints.length == 1)
+			this.showStartMarker();
+
 		return marker;
 	},
 
@@ -150,6 +153,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			}
 		}
 		this.waypoints = waypoints;
+		this.showStartMarker();
 	},
 
 	/*  */
@@ -320,6 +324,24 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		this.routeSegments.clearLayers();
 		this.routeWaypoints.clearLayers();
 		this.waypoints = [];
+	},
+	showStartMarker: function() {
+		if (this.startLabel) {
+			this.removeLayer(this.startLabel);
+			this.startLabel = null;
+		}	
+
+		if (!this.waypoints.length)
+			return;
+
+		var marker = this.waypoints[0];
+		this.startLabel = new L.tc.Label({
+			offset: [0, -16],
+			cssClass: 'marker-start'
+		});
+		this.startLabel.setContent("START");
+		this.startLabel.setLatLng(marker.getLatLng());
+		this.addLayer(this.startLabel)
 	}
 
 });
