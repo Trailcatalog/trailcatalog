@@ -28,6 +28,7 @@ var mapEngine = {
 		this.setupGeocoding();
 
 		$("#btnFinishTrail").on('click', $.proxy(this.saveTrail, this));
+		$("#btnClearAll").on('click', $.proxy(this.clearAll, this));
 
 	},
 	setSnap: function(snap) {
@@ -58,17 +59,17 @@ var mapEngine = {
 						value: item.text,
 						data: item
 					};
-				});				
+				});
 				done(results);
 			}
-		});		
+		});
 	},
 	geocoderSelect: function(data) {
 		var data = data.data;
 		if (data.bbox) {
 			var b = L.latLngBounds(L.latLng(data.bbox[1], data.bbox[0]), L.latLng(data.bbox[3], data.bbox[2]));
 			this.map.fitBounds(b);
-		} 
+		}
 		if (data.center) {
 			this.map.setView([data.center[1], data.center[0]], this.map.getZoom());
 		}
@@ -76,6 +77,20 @@ var mapEngine = {
 
 	saveTrail: function() {
 		var data = this.routeLayer.getRouteForSave();
+		var title = $("#trailName").val();
+		data.title = title;
+		console.log(data);
+		$.ajax({
+			url: '/api/saveTrail',
+			type: 'post',
+			data: JSON.stringify(data),
+			contentType : 'application/json'			
+		}, function(result) {
+			console.log(result);
+		});
+	},
+	clearAll: function() {
+		this.routeLayer.clearAll();
 	}
 };
 

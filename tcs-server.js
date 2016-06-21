@@ -3,8 +3,12 @@
 var appPort = 3000;
 
 var express = require('express');
-var app = express();
+var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
+
+
+var app = express();
+app.use(bodyParser.json());
 
 
 app.engine('handlebars', exphbs({

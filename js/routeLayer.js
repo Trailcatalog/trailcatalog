@@ -269,7 +269,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		};
 
 		// console.log(result);
-		console.log(JSON.stringify(result));
+		// console.log(JSON.stringify(result));
 		return result;
 	},
 
@@ -315,6 +315,11 @@ var tcRouteLayer = L.FeatureGroup.extend({
 
 
 		this._map.fitBounds(bounds);
+	},
+	clearAll: function() {
+		this.routeSegments.clearLayers();
+		this.routeWaypoints.clearLayers();
+		this.waypoints = [];
 	}
 
 });
