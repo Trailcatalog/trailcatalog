@@ -110,7 +110,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			var startWp = this.waypoints[this.waypoints.length - 1];
 			if (typeof prevWaypointIndex !== "undefined")
 				startWp = this.waypoints[prevWaypointIndex];
-			this.straightSegment = L.tc.StraightSegment(startWp).addTo(this);
+			this.straightSegment = L.tc.StraightSegment(startWp).addTo(this.routeSegments);
 			this.straightSegment.on('removed', this._segmentRemoved, this);
 			this.waypoints[this.waypoints.length - 1].relatedSegments.push(this.straightSegment);
 		}
@@ -234,20 +234,33 @@ var tcRouteLayer = L.FeatureGroup.extend({
 
 	// saving
 	getRouteForSave: function() {
-		var segments = this.routeSegments.toGeoJSON();
+		// var segments = this.routeSegments.toGeoJSON();
+
+		var segments = {
+			"type": "FeatureCollection",
+			"features": []
+		};
 
 		var sLayers = this.routeSegments.getLayers();
 		for (var i = 0; i < sLayers.length; i++) {
-			segments.features[i].properties["stamp"] = L.stamp(sLayers[i]);
+			var segment = sLayers[i].line.toGeoJSON();
+			if (sLayers[i] instanceof tcRouteSegment)
+				segment.properties["straight"] = false;
+			else
+				segment.properties["straight"] = true;
+
+			if (sLayers[i].markerStart)
+				segment.properties["markerStart"] = L.stamp(sLayers[i].markerStart);
+			if (sLayers[i].markerEnd)
+				segment.properties["markerEnd"] = L.stamp(sLayers[i].markerEnd);
+
+			segments.features.push(segment);
 		}
 
 		var waypoints = this.routeWaypoints.toGeoJSON();
 		var wLayers = this.routeWaypoints.getLayers();
 		for (var i = 0; i < wLayers.length; i++) {
-			var relatedStamps = wLayers[i].relatedSegments.map(function(item) {
-				return L.stamp(item);
-			});
-			waypoints.features[i].properties['relatedStamps'] = relatedStamps;
+			waypoints.features[i].properties['stamp'] = L.stamp(wLayers[i]);
 		}
 
 		var result = {
@@ -258,6 +271,50 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		// console.log(result);
 		// console.log(JSON.stringify(result));
 		return result;
+	},
+
+	restoreRouteFromJSON: function(data) {
+		var waypoints = data.waypoints;
+		var segments = data.segments;
+
+		var bounds = null;
+
+		var twLayer = L.geoJson(waypoints);
+		var wLayers = twLayer.getLayers();
+
+		var wpHash = {};
+
+		for (var i = 0; i < wLayers.length; i++) {
+			var coords = wLayers[i].getLatLng();
+
+			if (!bounds)
+				bounds = L.latLngBounds(coords, coords);
+			else
+				bounds.extend(coords);
+
+			var wp = this._addWaypoint(coords);
+			var stamp = waypoints.features[i].properties['stamp'];
+			wpHash[stamp] = wp;
+		}
+
+		var tsLayer = L.geoJson(segments);
+		var sLayers = tsLayer.getLayers();
+
+		for (var i = 0; i < sLayers.length; i++) {
+			var isStraight = segments.features[i].properties.straight;
+			var markerStart = wpHash[segments.features[i].properties.markerStart];
+			var markerEnd = wpHash[segments.features[i].properties.markerEnd];
+			var path = sLayers[i].getLatLngs();
+
+			var segment = L.tc.restoreSegment(isStraight, markerStart, markerEnd, path, this.directionsAPI);
+			this.routeSegments.addLayer(segment);
+			segment.on('removed', this._segmentRemoved, this);
+			markerStart.relatedSegments.push(segment);
+			markerEnd.relatedSegments.push(segment);
+		}
+
+
+		this._map.fitBounds(bounds);
 	}
 
 });

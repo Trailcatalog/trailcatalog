@@ -141,3 +141,14 @@ L.tc.RouteSegment = function(markerStart, markerEnd, directionsAPI, options) {
 L.tc.StraightSegment = function(markerStart, options) {
 	return new tcStraightSegment(markerStart, null, null, options);
 }
+L.tc.restoreSegment = function(isStraight, markerStart, markerEnd, path, directionsAPI) {
+	var segment;
+
+	if (isStraight) {
+		// segment = new tcStraightSegment(markerStart, markerEnd, directionsAPI);
+	} else {
+		segment = new tcRouteSegment(markerStart, markerEnd, directionsAPI);
+	}
+
+	return segment;
+}
