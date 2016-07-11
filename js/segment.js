@@ -16,7 +16,9 @@ var tcSegment = L.FeatureGroup.extend({
 			'opacity': 0.75
 		},
 		labelCssClass: '',
-		state: 'on'
+		state: 'on',
+		readOnly: false,
+		innerPoints: []
 	},
 	elevation: 0,
 	initialize: function(markerStart, markerEnd, directionsAPI, surfaceAPI, options, path) {
@@ -77,6 +79,10 @@ var tcSegment = L.FeatureGroup.extend({
 
 	_calcElevation: function() {
 		var self = this;
+
+		if (!this.surfaceAPI)
+			return;
+
 		var latLngs = this.line.getLatLngs();
 
 		var isStraight = this instanceof tcStraightSegment;
@@ -134,15 +140,22 @@ var tcRouteSegment = tcSegment.extend({
 		this.label = null;
 
 		if (!this.path) {
-			var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
+			var waypoints = [this.markerStart.getLatLng()];
+			waypoints = waypoints.concat(this.options.innerPoints);
+			waypoints.push(this.markerEnd.getLatLng());
+			// var waypoints = [this.markerStart.getLatLng(), this.markerEnd.getLatLng()];
 			this.directionsAPI.getRoute(waypoints, function(err, data) {
 				if (!err && data.length) {
 					data[0] = waypoints[0];
-					data[data.length - 1] = waypoints[1];
+					self.markerEnd.setLatLng(data[data.length - 1]);
 
 					self.line = L.polyline(data, self.options.routeStyle).addTo(self);
 					self._calcDistance();
 					self._calcElevation();
+
+					if (typeof self.options.callback === "function") {
+						self.options.callback();
+					}
 				}
 			});
 		} else {
@@ -200,6 +213,14 @@ var tcStraightSegment = tcSegment.extend({
 			this.removeLayer(this.tempEndMarker);
 			this.tempEndMarker = null;
 		}
+	},
+	getLastLatLng: function() {
+		var result = null;
+		var latLngs = this.line.getLatLngs();
+		if (latLngs.length && latLngs.length > 1) {
+			result = latLngs[latLngs.length - 1];
+		}
+		return result;
 	}
 });
 
@@ -215,13 +236,13 @@ L.tc.RouteSegment = function(markerStart, markerEnd, directionsAPI, surfaceAPI, 
 L.tc.StraightSegment = function(markerStart, surfaceAPI, options) {
 	return new tcStraightSegment(markerStart, null, null, surfaceAPI, options);
 }
-L.tc.restoreSegment = function(isStraight, markerStart, markerEnd, path, directionsAPI, surfaceAPI) {
+L.tc.restoreSegment = function(isStraight, markerStart, markerEnd, path, directionsAPI, surfaceAPI, options) {
 	var segment;
 
 	if (isStraight) {
-		segment = new tcStraightSegment(markerStart, markerEnd, directionsAPI, surfaceAPI, {}, path);
+		segment = new tcStraightSegment(markerStart, markerEnd, directionsAPI, surfaceAPI, options, path);
 	} else {
-		segment = new tcRouteSegment(markerStart, markerEnd, directionsAPI, surfaceAPI, {}, path);
+		segment = new tcRouteSegment(markerStart, markerEnd, directionsAPI, surfaceAPI, options, path);
 	}
 
 	return segment;

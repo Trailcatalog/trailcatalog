@@ -3,7 +3,7 @@
 var mapEngine = {
 	options: {
 		zoom: 15,
-		tileLayerName: 'runkeeper.4nc7syvi',
+		tileLayerName: 'mapbox.outdoors',
 		mapContainerId: 'map',
 		mapBoxApiKey: 'pk.eyJ1IjoiYXJzZW55biIsImEiOiI3YkwwSGpFIn0.sz_Ar78nUbUZc6Ic1aNhkQ'
 	},
@@ -15,7 +15,15 @@ var mapEngine = {
 			zoomControl: false
 		});
 
-		this.routeLayer = L.tc.RouteLayer(this.directionsAPI, this.intersectionsAPI).addTo(this.map);
+		this.routeLayer = L.tc.StaticRouteLayer().addTo(this.map);
+
+		if (typeof trailData !== "undefined") {
+			this.restoreTrail();
+		}
+	},
+
+	restoreTrail: function() {
+		this.routeLayer.restoreRouteFromJSON(trailData, this.map);
 	}
 };
 

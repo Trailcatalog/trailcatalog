@@ -1,0 +1,1 @@
+java -jar compiler.jar --js label.js --js segment.js --js staticRouteLayer.js --js staticEngine.js  --js_output_file staticApp.js

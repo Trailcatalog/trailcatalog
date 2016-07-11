@@ -1,0 +1,1 @@
+java -jar compiler.jar --js intersectionsAPI.js --js directionsAPI.js --js surfaceAPI.js --js label.js --js segment.js --js routeLayer.js --js mapEngine.js  --js_output_file app.js

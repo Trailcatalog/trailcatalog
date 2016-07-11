@@ -10,7 +10,7 @@ var tcIntersectionsAPI = L.Class.extend({
 		this.bounds = L.latLngBounds(this._map.getCenter(), this._map.getCenter());
 		this.prepareIntersections();
 
-		this._mapmoved = debounce(L.bind(this._mapmoved, this), 1500);
+		this._mapmoved = debounce(L.bind(this._mapmoved, this), 1000);
 
 		this._map.on('moveend', this._mapmoved, this);
 	},

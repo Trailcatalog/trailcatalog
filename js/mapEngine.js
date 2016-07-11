@@ -36,7 +36,7 @@ var mapEngine = {
 		}
 	},
 	setSnap: function(snap) {
-		this.routeLayer.options.snap2roads = snap;
+		this.routeLayer.setSnap(snap);		
 	},
 	setupGeocoding: function() {
 		this.geocoder = L.mapbox.geocoder('mapbox.places');
@@ -45,8 +45,8 @@ var mapEngine = {
 			minChars: 3,
 			lookup: $.proxy(this.geocoderLookup, this),
 			onSelect: $.proxy(this.geocoderSelect, this),
-			deferRequestBy: 150,
-			width: 210
+			"deferRequestBy": 150,
+			"width": 210
 		});
 	},
 	geocoderLookup: function(query, done) {
@@ -132,4 +132,16 @@ function debounce(func, wait, immediate) {
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);
 	};
+};
+
+//http://stackoverflow.com/questions/3954438/remove-item-from-array-by-value
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
 };

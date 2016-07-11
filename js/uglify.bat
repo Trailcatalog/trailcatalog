@@ -1,0 +1,1 @@
+uglifyjs directionsAPI.js intersectionsAPI.js surfaceAPI.js label.js segment.js routeLayer.js mapEngine.js -o app.js -m --mangle-props --reserved-file reserved-file.js -c hoist_vars=false,if_return=false

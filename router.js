@@ -75,15 +75,17 @@ function staticTrail(req, res) {
 
 	if (id) {
 		getTrail(id, function(err, trailData) {
-			// res.send(trailData);
-			res.render('staticTrail', {
-				title: trailData.trail.title,
-				id: trailData.trail.id,
-				trailData: "var trailData = " + JSON.stringify({
-					waypoints: trailData.waypoints,
-					segments: trailData.segments
-				})
-			});
+			if (!trailData.trail) {
+				res.redirect('/');
+			} else {
+				res.render('staticTrail', {
+					title: trailData.trail.title,
+					id: trailData.trail.id,
+					elevation: trailData.trail.elevation,
+					length: trailData.trail.length,
+					trailData: "var trailData = " + JSON.stringify(trailData)
+				});
+			}
 		});
 	} else {
 		res.redirect('/');
@@ -95,12 +97,15 @@ function editTrail(req, res) {
 
 	if (id) {
 		getTrail(id, function(err, trailData) {
-			// res.send(trailData);
-			res.render('trail', {
-				title: trailData.trail.title,
-				id: trailData.trail.id,
-				trailData: "var trail_id = " + trailData.trail.id + ";var trailData = " + JSON.stringify(trailData)
-			});
+			if (!trailData.trail) {
+				res.redirect('/');
+			} else {
+				res.render('trail', {
+					title: trailData.trail.title,
+					id: trailData.trail.id,
+					trailData: "var trail_id = " + trailData.trail.id + ";var trailData = " + JSON.stringify(trailData)
+				});
+			}
 		});
 	} else {
 		res.redirect('/');
@@ -129,8 +134,8 @@ function prepareTrailData(data) {
 	var queryTrails = "INSERT INTO trails(title, length, elevation) VALUES($1, $2, $3) RETURNING id";
 	var queryTrailsParams = [data.title, data.distance, data.elevation];
 
-	var queryWaypoints = "INSERT INTO waypoints(trail_id, stamp, point) VALUES($1, $2, $3)";
-	var querySegments = 'INSERT INTO segments(trail_id, is_straight, "markerStart", "markerEnd", line) VALUES($1, $2, $3, $4, $5)';
+	var queryWaypoints = "INSERT INTO waypoints(trail_id, stamp, point, is_intersection) VALUES($1, $2, $3, $4)";
+	var querySegments = 'INSERT INTO segments(trail_id, is_straight, "markerStart", "markerEnd", line, inner_points) VALUES($1, $2, $3, $4, $5, $6)';
 
 	var queryWaypointsParams = [];
 	var querySegmentsParams = [];
@@ -138,8 +143,9 @@ function prepareTrailData(data) {
 	var waypoints = data.waypoints.features;
 	for (var i = 0; i < waypoints.length; i++) {
 		var stamp = waypoints[i].properties.stamp;
+		var isIntersection = waypoints[i].properties.isIntersection;
 		var geom = 'SRID=4326;' + wkx.Geometry.parseGeoJSON(waypoints[i].geometry).toWkt();
-		queryWaypointsParams.push([null, stamp, geom]);
+		queryWaypointsParams.push([null, stamp, geom, isIntersection]);
 	}
 
 	var segments = data.segments.features;
@@ -147,8 +153,9 @@ function prepareTrailData(data) {
 		var is_straight = segments[i].properties.straight;
 		var markerStart = segments[i].properties.markerStart;
 		var markerEnd = segments[i].properties.markerEnd;
+		var innerPoints = segments[i].properties.innerPoints;
 		var geom = 'SRID=4326;' + wkx.Geometry.parseGeoJSON(segments[i].geometry).toWkt();
-		querySegmentsParams.push([null, is_straight, markerStart, markerEnd, geom]);
+		querySegmentsParams.push([null, is_straight, markerStart, markerEnd, geom, innerPoints]);
 	}
 
 	return {
@@ -198,10 +205,11 @@ function saveTrail(req, res) {
 					}, callback);
 				}
 			], function(err) {
-				if (err)
+				if (err) {
 					res.send("error " + err);
-				else
+				} else {
 					res.send(trail_id.toString());
+				}
 				done();
 			});
 		});
@@ -267,7 +275,7 @@ function updateTrail(req, res) {
 				});
 			});
 		});
-	});	
+	});
 }
 
 function getTrailList(callback) {
@@ -322,7 +330,8 @@ function getTrail(id, callback) {
 							var feature = {
 								"type": "Feature",
 								"properties": {
-									"stamp": result.rows[i].stamp
+									"stamp": result.rows[i].stamp,
+									"isIntersection": result.rows[i].is_intersection
 								},
 								"geometry": geom.toGeoJSON()
 							};
@@ -351,6 +360,7 @@ function getTrail(id, callback) {
 									"straight": result.rows[i].is_straight,
 									"markerStart": result.rows[i].markerStart,
 									"markerEnd": result.rows[i].markerEnd,
+									"innerPoints": result.rows[i].inner_points
 								},
 								"geometry": geom.toGeoJSON()
 							};

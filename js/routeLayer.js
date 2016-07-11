@@ -61,12 +61,14 @@ var tcRouteLayer = L.FeatureGroup.extend({
 
 		if (!this.options.snap2roads) { // straight
 			this._addStraightPoint(latLng, intersection, prevWaypointIndex);
-		} else if (intersection) {
-			this._addRoutePoint(intersection.latLng, prevWaypointIndex);
+		} else {
+			if (intersection)
+				latLng = intersection.latLng;
+			this._addRoutePoint(latLng, prevWaypointIndex, !!intersection);
 		}
 	},
 
-	_addWaypoint: function(latLng) {
+	_addWaypoint: function(latLng, isIntersection) {
 		var self = this;
 
 		var marker = L.marker(latLng, {
@@ -78,23 +80,47 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		if (this.waypoints.length == 1)
 			this.showStartMarker();
 
+		if (isIntersection) {
+			marker.isIntersection = true;
+		}
+
 		return marker;
 	},
 
-	_addRoutePoint: function(latLng, prevWaypointIndex) {
+	_addRoutePoint: function(latLng, prevWaypointIndex, isIntersection) {
 		if (this.waypoints.length && this.waypoints[this.waypoints.length - 1].getLatLng().equals(latLng))
 			return;
 
-		var marker = this._addWaypoint(latLng);
+		var marker = this._addWaypoint(latLng, isIntersection);
+
+		var innerPoints = [];
 
 		if (this.waypoints.length > 1) {
-
-			if (typeof prevWaypointIndex !== "undefined")
+			if (typeof prevWaypointIndex !== "undefined") {
 				var wpStart = this.waypoints[prevWaypointIndex];
-			else
+				if (!wpStart.isIntersection && wpStart.relatedSegments.length == 1) {
+					var oldSegment = wpStart.relatedSegments[0];
+					var oldWaypoint = wpStart;
+					wpStart = oldSegment.markerStart;
+
+					innerPoints = oldSegment.options.innerPoints;
+					innerPoints.push(oldWaypoint.getLatLng());
+
+					// remove old waypoint and segment
+					this.routeSegments.removeLayer(oldSegment);
+					oldSegment.off('removed', this._segmentRemoved, this);
+					this.routeWaypoints.removeLayer(oldWaypoint);
+					this.waypoints.remove(oldWaypoint);
+					wpStart.relatedSegments.remove(oldSegment);
+				}
+			} else {
 				var wpStart = this.waypoints[this.waypoints.length - 2];
+			}
 			var wpEnd = this.waypoints[this.waypoints.length - 1];
-			var segment = L.tc.RouteSegment(wpStart, wpEnd, this.directionsAPI, this.surfaceAPI);
+			var segment = L.tc.RouteSegment(wpStart, wpEnd, this.directionsAPI, this.surfaceAPI, {
+				callback: $.proxy(this.hideDragMarker, this),
+				innerPoints: innerPoints
+			});
 
 			wpStart.relatedSegments.push(segment);
 			wpEnd.relatedSegments.push(segment);
@@ -107,7 +133,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 
 	_addStraightPoint: function(latLng, intersection, prevWaypointIndex) {
 		if (!this.waypoints.length) {
-			var marker = this._addWaypoint(latLng);
+			var marker = this._addWaypoint(latLng, !!intersection);
 		}
 
 		if (!this.straightSegment) {
@@ -122,7 +148,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		if (!this.waypoints[this.waypoints.length - 1].getLatLng().equals(latLng)) {
 			if (intersection) {
 				this.straightSegment.addPoint(intersection.latLng);
-				var marker = this._addWaypoint(intersection.latLng);
+				var marker = this._addWaypoint(intersection.latLng, !!intersection);
 				this.straightSegment.endDraw(marker);
 				marker.relatedSegments.push(this.straightSegment);
 				this.straightSegment = null;
@@ -171,7 +197,10 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			this.addLayer(this.dragMarker);
 		this.dragMarker.setLatLng(latLng);
 		this.currentWaypoint = closest.index;
+	},
 
+	hideDragMarker: function() {
+		this.removeLayer(this.dragMarker);
 	},
 
 	_dragStart: function(e) {
@@ -244,7 +273,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		var segments = {
 			"type": "FeatureCollection",
 			"features": []
-		};		
+		};
 
 		var sLayers = this.routeSegments.getLayers();
 		var distance = 0;
@@ -261,8 +290,10 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			if (sLayers[i].markerEnd)
 				segment.properties["markerEnd"] = L.stamp(sLayers[i].markerEnd);
 
+			segment.properties["innerPoints"] = JSON.stringify(sLayers[i].options.innerPoints);
+
 			segments.features.push(segment);
-			distance += sLayers[i].getDistance();			
+			distance += sLayers[i].getDistance();
 			elevation += sLayers[i].getElevation();
 		}
 
@@ -270,6 +301,7 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		var wLayers = this.routeWaypoints.getLayers();
 		for (var i = 0; i < wLayers.length; i++) {
 			waypoints.features[i].properties['stamp'] = L.stamp(wLayers[i]);
+			waypoints.features[i].properties['isIntersection'] = !!wLayers[i].isIntersection;
 		}
 
 		var result = {
@@ -279,8 +311,6 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			elevation: Math.round(elevation)
 		};
 
-		// console.log(result);
-		// console.log(JSON.stringify(result));
 		return result;
 	},
 
@@ -303,8 +333,12 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			else
 				bounds.extend(coords);
 
-			var wp = this._addWaypoint(coords);
 			var stamp = waypoints.features[i].properties['stamp'];
+			var isIntersection = waypoints.features[i].properties['isIntersection'];
+
+			var wp = this._addWaypoint(coords);
+			wp.isIntersection = isIntersection;
+
 			wpHash[stamp] = wp;
 		}
 
@@ -316,8 +350,16 @@ var tcRouteLayer = L.FeatureGroup.extend({
 			var markerStart = wpHash[segments.features[i].properties.markerStart];
 			var markerEnd = wpHash[segments.features[i].properties.markerEnd];
 			var path = sLayers[i].getLatLngs();
+			var innerPoints = segments.features[i].properties.innerPoints;
+			if (innerPoints.length) {
+				innerPoints = JSON.parse(innerPoints).map(function(item) {
+					return L.latLng(item.lat, item.lng);
+				});
+			}
 
-			var segment = L.tc.restoreSegment(isStraight, markerStart, markerEnd, path, this.directionsAPI, this.surfaceAPI);
+			var segment = L.tc.restoreSegment(isStraight, markerStart, markerEnd, path, this.directionsAPI, this.surfaceAPI, {
+				innerPoints: innerPoints
+			});
 			this.routeSegments.addLayer(segment);
 			segment.on('removed', this._segmentRemoved, this);
 			markerStart.relatedSegments.push(segment);
@@ -330,13 +372,17 @@ var tcRouteLayer = L.FeatureGroup.extend({
 	clearAll: function() {
 		this.routeSegments.clearLayers();
 		this.routeWaypoints.clearLayers();
+		if (this.startLabel) {
+			this.removeLayer(this.startLabel);
+			this.startLabel = null;
+		}
 		this.waypoints = [];
 	},
 	showStartMarker: function() {
 		if (this.startLabel) {
 			this.removeLayer(this.startLabel);
 			this.startLabel = null;
-		}	
+		}
 
 		if (!this.waypoints.length)
 			return;
@@ -349,6 +395,22 @@ var tcRouteLayer = L.FeatureGroup.extend({
 		this.startLabel.setContent("START");
 		this.startLabel.setLatLng(marker.getLatLng());
 		this.addLayer(this.startLabel)
+	},
+
+	setSnap: function(snap) {
+		this.options.snap2roads = snap;
+
+		if (snap && this.straightSegment != null) {
+			var latLng = this.straightSegment.getLastLatLng();
+			if (latLng) {
+				var marker = this._addWaypoint(latLng);
+				this.straightSegment.endDraw(marker);
+				marker.relatedSegments.push(this.straightSegment);
+			} else {
+				this.routeSegments.removeLayer(this.straightSegment);
+			}
+			this.straightSegment = null
+		}
 	}
 
 });

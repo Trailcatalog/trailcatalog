@@ -1,6 +1,14 @@
 <nav class="detail">
 	<a class='button-logo' href='/'></a>
 	<div class="trail-name-block trail-name-block-static">{{title}}</div>
+	<div class='info info-elevation'>
+		{{elevation}} Feet
+		<span>Elevation Gain</span>
+	</div>
+	<div class='info info-distance'>
+		{{length}} Miles
+		<span>Distance One-Way</span>
+	</div>	
 	<a class='button-add-trail' id="btnEditTrail" href='/edittrail/{{id}}'>Edit trail</a>
 </nav>
 
@@ -17,5 +25,5 @@
 
 <script type="text/javascript" src="js/label.js"></script>
 <script type="text/javascript" src="js/segment.js"></script>
-<script type="text/javascript" src="js/routeLayer.js"></script>
+<script type="text/javascript" src="js/staticRouteLayer.js"></script>
 <script type="text/javascript" src="js/staticEngine.js"></script>

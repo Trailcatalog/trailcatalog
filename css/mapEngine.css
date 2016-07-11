@@ -16,10 +16,10 @@ html, body {
 
 .toolbar {
 	position: absolute;
-    top: 100px;
-    left: 40px;
-    z-index: 100000;
-    margin: 0;
+	top: 100px;
+	left: 40px;
+	z-index: 100000;
+	margin: 0;
 }
 
 .btn {
@@ -59,4 +59,26 @@ nav {
 	width: 100%;
 	padding-left: 20px;	
 	font-weight: bold;
+}
+
+nav.detail a.button-logo {
+	flex-shrink: 0;
+}
+
+nav.detail div.info {
+	padding: 0 40px 0 40px;	
+	font-size: 20px;
+	line-height: 20px;
+	font-weight: bold;
+	border-left: 1px solid #DDDDDD;
+	height: 60px;
+	padding-top: 10px;
+	white-space: nowrap;
+}
+
+nav.detail div.info span {
+	width: 100%;
+	display: block;
+	text-transform: uppercase;
+	font-size: 10px;
 }

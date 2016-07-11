@@ -63,3 +63,10 @@
 	padding: 0 5px;
 }
 
+
+.leaflet-label.label-read-only a {
+	display: none;
+}
+.leaflet-label.label-read-only span {
+	top: 5px;
+}
