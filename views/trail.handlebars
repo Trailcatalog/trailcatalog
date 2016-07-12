@@ -1,42 +1,53 @@
-<nav>
-	<a class='button-logo' href='/'></a>
-	<div class="trail-name-block"><input type="text" id="trailName" class="trail-name" placeholder="Name of your trail..."></div>
-	<a class='button-add-trail' id="btnFinishTrail" href='javascript:void(0);'>Finish trail</a>
-</nav>
-
-<div class='toolbar'>
-	<div class='btn button-draw color-snapped'>
-		draw
+<body id='detail'>
+	<nav> 
+		<a class='button-logo' href='/'><span>Trail Catalog</span></a>
+		<div class='menu'>
+			<div class='button-edit-trail'>
+				<a href='newtrail'>Add a Trail</a>
+			</div>
+		</div>
+	</nav>
+	<ul class='trail-list title-header'>
+		<li>
+			<form>
+				<input type="text" id="trailName" class='title-edit' placeholder="Name this trail...">
+			</form>
+			<a class="button-finish-trail" id="btnFinishTrail" href="javascript:void(0);">Finish Trail</a>
+		</li>
+	</ul>
+	<div class='toolbar'>
+		<div class='btn button-draw color-snapped'>
+			DRAW
+		</div>
+		<div class='button-snap color-snapped'>
+			<label><input type="checkbox" id="cbxSnap2Roads" name="snap" value="snap" checked="checked">SNAP TO PATHS</label>
+		</div>
+		<div class='btn button-delete-all' id="btnClearAll">
+			DELETE ALL
+		</div>
+		<div class='search'>
+			<input type="text" id="tbxSearch" placeholder="Center map at...">
+		</div>
 	</div>
-	<div class='button-snap color-snapped'>
-		<label><input type="checkbox" id="cbxSnap2Roads" name="snap" value="snap" checked="checked">snap to paths</label>
-	</div>
-	<div class='btn button-delete-all' id="btnClearAll">
-		delete all
-	</div>
-	<div class='search'>
-		<input type="text" id="tbxSearch" placeholder="Center map at...">
-	</div>
-</div>
+	<div id="map" class="edit"></div>
 
-<div id="map" class="edit"></div>
+	<script type="text/javascript">
+		{{{trailData}}}
+	</script>
 
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/mapbox.js/mapbox.js"></script>
+	<script type="text/javascript" src="bower_components/polyline/src/polyline.js"></script>
+	<script type="text/javascript" src="bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+	<script type="text/javascript" src="bower_components/async/dist/async.min.js"></script>
+	<script type="text/javascript" src="bower_components/jquery-autocomplete-fix/dist/jquery.autocomplete.min.js"></script>
 
-<script type="text/javascript">
-	{{{trailData}}}
-</script>
+	<script type="text/javascript" src="js/directionsAPI.js"></script>
+	<script type="text/javascript" src="js/intersectionsAPI.js"></script>
+	<script type="text/javascript" src="js/surfaceAPI.js"></script>
+	<script type="text/javascript" src="js/label.js"></script>
+	<script type="text/javascript" src="js/segment.js"></script>
+	<script type="text/javascript" src="js/routeLayer.js"></script>
+	<script type="text/javascript" src="js/mapEngine.js"></script>
 
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="bower_components/mapbox.js/mapbox.js"></script>
-<script type="text/javascript" src="bower_components/polyline/src/polyline.js"></script>
-<script type="text/javascript" src="bower_components/Leaflet.label/dist/leaflet.label.js"></script>
-<script type="text/javascript" src="bower_components/async/dist/async.min.js"></script>
-<script type="text/javascript" src="bower_components/jquery-autocomplete-fix/dist/jquery.autocomplete.min.js"></script>
-
-<script type="text/javascript" src="js/directionsAPI.js"></script>
-<script type="text/javascript" src="js/intersectionsAPI.js"></script>
-<script type="text/javascript" src="js/surfaceAPI.js"></script>
-<script type="text/javascript" src="js/label.js"></script>
-<script type="text/javascript" src="js/segment.js"></script>
-<script type="text/javascript" src="js/routeLayer.js"></script>
-<script type="text/javascript" src="js/mapEngine.js"></script>
+</body>

@@ -1,34 +1,64 @@
-<nav>
-	<a class='button-logo' href='/'></a>
-	<div class="trail-name-block"></div>
-	<a class='button-add-trail' href='newtrail'>Add a trail</a>
-</nav>
+<body id='index'>
+	<nav> 
+		<a class='button-logo' href='/'><span>Trail Catalog</span></a>
+		<div class='menu'>
+			<div class='button-edit-trail'>
+				<a href='newtrail'>Add a Trail</a>
+			</div>
+		</div>
+	</nav>
 
+	{{#if rows}}
+	<ul class='trail-list'>
+		{{#each rows}}
+		<li>
+			<div class='trail-title'>
+				{{#if title}}{{title}}{{else}}&nbsp;{{/if}}
+				<span>{{roundTo4 lat}} / {{roundTo4 lng}}</span>
+				<a class='overlay' href='/trail/{{id}}'></a>
+			</div>
+			<div class='button-embed'>
+				<a class='overlay' href='javascript:void(0);' data-trail-id="{{id}}"></a>
+			</div>
+			<div class='button-edit'>
+				<a class='overlay' href='/edittrail/{{id}}'></a>
+			</div>
+			<div class='button-delete'>
+				<a class='overlay' href='/api/deletetrail/{{id}}'></a>
+			</div>
+			<div class='info-elevation'>
+				{{numberCommas elevation}}'
+				<span>Elevation Gain</span>
+			</div>
+			<div class='info-distance'>
+				{{length}} Miles
+				<span>Distance One-Way</span>
+			</div>
+		</li>
+		{{/each}}
+	</ul>
+	{{/if}}
 
-{{#if rows}}
-<ul class='trail-list'>
-	{{#each rows}}
-	<li>
-		<div class='trail-title relative'>
-			{{title}}
-			<span>Details about location to be added later</span>
-			<a class='overlay' href='/trail/{{id}}'></a>
+	
+	<div class='modal-embed vertical-align hide'>
+		<h3>Embed this trail <span class='button-close'></span></h3>
+		<div class='container'>
+			<form>
+				<div class='embed-width'>
+					<input type="text" id="" class='' placeholder="" value="700">
+				</div>
+				<div class='embed-height'>					
+					<input type="text" id="" class='' placeholder="" value="400">
+				</div>
+			</form>
+			<label><input type="checkbox" class='embed-100-percent' name="" value="">100% Width</label>
+			<div class='button-generate-code'>Generate Code</div>
+
+			<p><b>Copy and paste this code into your HTML:</b></p>
+			<textarea class='embed-code' readonly="readonly"></textarea>
 		</div>
-		<div class='button-edit-home relative'>
-			<a class='overlay' href='/edittrail/{{id}}'></a>
-		</div>
-		<div class='button-delete-home relative'>
-			<a class='overlay' href='/api/deletetrail/{{id}}'></a>
-		</div>
-		<div class='info-elevation'>
-			{{elevation}} Feet
-			<span>Elevation Gain</span>
-		</div>
-		<div class='info-distance'>
-			{{length}} Miles
-			<span>Distance One-Way</span>
-		</div>
-	</li>
-	{{/each}}
-</ul>
-{{/if}}
+	</div>
+	
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="js/embedPopup.js"></script>
+</body>

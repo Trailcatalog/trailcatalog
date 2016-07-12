@@ -12,7 +12,16 @@ app.use(bodyParser.json());
 
 
 app.engine('handlebars', exphbs({
-	defaultLayout: 'main'
+	defaultLayout: 'main',
+	helpers: {
+		numberCommas: function(str) {
+			return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		},
+		roundTo4: function(str) {
+			if (str)
+				return parseFloat(+str.toFixed(4));
+		}
+	}
 }));
 app.set('view engine', 'handlebars');
 

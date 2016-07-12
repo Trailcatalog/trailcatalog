@@ -1,11 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="60px" height="60px" viewBox="0 0 60 60" enable-background="new 0 0 60 60" xml:space="preserve">
-<g opacity="0.3">
-	<path fill="#26353C" d="M10.271,1.727C11.427,0.573,13.009,0,14.522,0s3.093,0.573,4.246,1.727l31.087,31.119l-16.983,17
-		L1.785,18.729c-2.379-2.379-2.379-6.121,0-8.498L10.271,1.727L10.271,1.727z"/>
-	<path fill="#26353C" d="M37.333,53.871l16.554-16.561L60,59.998L37.333,53.871z"/>
-</g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>edit</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.410389459">
+        <g id="Actions2" transform="translate(-94.000000, -29.000000)" fill="#0B2747">
+            <g id="edit" transform="translate(94.000000, 29.000000)">
+                <polygon id="Shape" points="0.058990099 17.98884 5.09489109 16.62516 1.42823762 12.9231"></polygon>
+                <polygon id="Shape" points="2.85237624 11.50362 6.5190297 15.20568 14.4657624 7.18128 10.7989307 3.47634"></polygon>
+                <path d="M17.6396436,2.7711 L15.1460198,0.25434 C14.8218416,-0.07344 14.294495,-0.07344 13.9699604,0.25434 L12.3588713,1.88442 L16.025703,5.5863 L17.6394653,3.9591 C17.9611485,3.6315 17.9611485,3.09888 17.6396436,2.7711 L17.6396436,2.7711 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
 </svg>

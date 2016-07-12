@@ -56,7 +56,7 @@ var tcIntersectionsAPI = L.Class.extend({
 			if (this.bounds.contains(bounds))
 				return;
 
-			console.log('prepareIntersections');
+			// console.log('prepareIntersections');
 			this.inProcess = true;
 			this.bounds.extend(bounds);
 			var bbox = "[bbox:" + bounds.getSouth() + "," + bounds.getWest() + "," + bounds.getNorth() + "," + bounds.getEast() + "]";
@@ -76,7 +76,7 @@ var tcIntersectionsAPI = L.Class.extend({
 					var result = self._parseOverpassData(data);
 					L.Util.extend(self.intersections, result);
 					self.inProcess = false;
-					console.log('prepareIntersections done');
+					// console.log('prepareIntersections done');
 				})
 				.error(function(data) {
 					self.inProcess = false;

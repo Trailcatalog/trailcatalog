@@ -7,10 +7,10 @@ var async = require('async');
 var request = require('request');
 
 var dbConfig = {
-	user: 'postgres', //env var: PGUSER
-	database: 'trailcatalog', //env var: PGDATABASE
-	password: '123', //env var: PGPASSWORD
-	port: 5432 //env var: PGPORT
+	user: 'trailcatalog', 
+	database: 'trailcatalog',
+	password: 'tc#password',
+	host: '/var/run/postgresql'
 };
 
 var pool = new Pool(dbConfig);
@@ -79,13 +79,20 @@ function staticTrail(req, res) {
 			if (!trailData.trail) {
 				res.redirect('/');
 			} else {
-				res.render('staticTrail', {
+				var renderData = {
 					title: trailData.trail.title,
 					id: trailData.trail.id,
 					elevation: trailData.trail.elevation,
 					length: trailData.trail.length,
-					trailData: "var trailData = " + JSON.stringify(trailData)
-				});
+					trailData: "var trailData = " + JSON.stringify(trailData)					
+				};				
+
+				if (trailData.coords != null) {
+					renderData.lat = trailData.coords.lat;
+					renderData.lng = trailData.coords.lng;
+				}
+
+				res.render('staticTrail', renderData);
 			}
 		});
 	} else {
@@ -308,7 +315,7 @@ function getTrailList(callback) {
 		if (err)
 			return callback(err);
 
-		client.query('SELECT * FROM trails ORDER BY id DESC', function(err, result) {
+		client.query('SELECT * FROM (SELECT t.*, ST_Y(w.point) as lat,  ST_X(w.point) as lng, row_number() OVER (PARTITION BY t.id ORDER BY w.stamp) as rn FROM trails t LEFT JOIN waypoints w ON t.id = w.trail_id ORDER BY t.id DESC) r WHERE rn = 1', function(err, result) {
 			if (err) {
 				done();
 				return callback(err);
@@ -330,6 +337,18 @@ function getTrail(id, callback) {
 				// trails
 				function(callback) {
 					client.query('SELECT * FROM trails WHERE id = $1', [id], function(err, result) {
+						if (err)
+							return callback(err);
+
+						if (result.rows.length)
+							callback(null, result.rows[0]);
+						else
+							callback(null);
+					});
+				},
+				// start lat, lng
+				function(callback) {
+					client.query('SELECT ST_Y(point) as lat, ST_X(point) as lng FROM waypoints WHERE trail_id = $1 ORDER BY id ASC LIMIT 1', [id], function(err, result) {
 						if (err)
 							return callback(err);
 
@@ -400,8 +419,9 @@ function getTrail(id, callback) {
 				done();
 				var result = {
 					trail: results[0],
-					waypoints: results[1],
-					segments: results[2]
+					coords: results[1],
+					waypoints: results[2],
+					segments: results[3]
 				};
 				callback(err, result);
 			});

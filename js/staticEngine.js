@@ -5,7 +5,7 @@ var mapEngine = {
 		zoom: 15,
 		tileLayerName: 'mapbox.outdoors',
 		mapContainerId: 'map',
-		mapBoxApiKey: 'pk.eyJ1IjoiYXJzZW55biIsImEiOiI3YkwwSGpFIn0.sz_Ar78nUbUZc6Ic1aNhkQ'
+		mapBoxApiKey: 'pk.eyJ1Ijoicm9tYW5wIiwiYSI6ImF6eXlJTmcifQ.c8lx6qJoMa_apYeZvh34Sw'
 	},
 
 	init: function(options) {
