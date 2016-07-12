@@ -9,9 +9,12 @@ html, body {
 	height: 100%;
 }
 
+#map.edit {
+	cursor: crosshair;
+}
+
 #map {
 	flex: 1;
-	cursor: crosshair;
 }
 
 .toolbar {

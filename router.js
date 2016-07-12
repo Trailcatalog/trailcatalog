@@ -24,6 +24,7 @@ module.exports.addRoutes = function(app) {
 	ro.get('/newtrail', newTrail);
 	ro.get('/trail/:id', staticTrail);
 	ro.get('/edittrail/:id', editTrail);
+	ro.get('/embedtrail/:id', embedtrail);
 
 	ro.post('/api/saveTrail', saveTrail);
 	ro.post('/api/saveTrail/:id', updateTrail);
@@ -92,6 +93,28 @@ function staticTrail(req, res) {
 	}
 }
 
+function embedtrail(req, res) {
+	var id = +req.params.id;
+
+	if (id) {
+		getTrail(id, function(err, trailData) {
+			if (!trailData.trail) {
+				res.redirect('/');
+			} else {
+				res.render('embedTrail', {
+					title: trailData.trail.title,
+					id: trailData.trail.id,
+					elevation: trailData.trail.elevation,
+					length: trailData.trail.length,
+					trailData: "var trailData = " + JSON.stringify(trailData)
+				});
+			}
+		});
+	} else {
+		res.render('embedNotFound');
+	}
+}
+
 function editTrail(req, res) {
 	var id = +req.params.id;
 
@@ -111,6 +134,8 @@ function editTrail(req, res) {
 		res.redirect('/');
 	}
 }
+
+
 
 function deleteTrail(req, res) {
 	var id = +req.params.id;
