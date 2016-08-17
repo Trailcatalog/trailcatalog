@@ -51,8 +51,9 @@ nav {
 }
 .toolbar .search input {
 	padding-left: 20px;
-	padding-right: 30px;
+	padding-right: 80px;
 	background-position: 190px center; 
+	color: #fff;
 }
 
 .autocomplete-suggestions {
