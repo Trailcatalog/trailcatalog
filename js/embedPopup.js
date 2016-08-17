@@ -41,7 +41,7 @@ var embedPopupEngine = {
 		$(".modal-embed .embed-code").val(code);
 	},
 	generateCode(trailId) {
-		var tpl = '<iframe src="http://prototype.trailcatalog.org/embedtrail/{{id}}/" width="{{width}}" height="{{height}}" frameborder="0"></iframe>';
+		var tpl = '<iframe src="//prototype.trailcatalog.org/embedtrail/{{id}}/" width="{{width}}" height="{{height}}" frameborder="0"></iframe>';
 
 		var width = +$(".modal-embed .embed-width input").val();
 		if (isNaN(width)) {
