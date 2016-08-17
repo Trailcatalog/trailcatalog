@@ -2,9 +2,10 @@
 
 var mapEngine = {
 	options: {
-		zoom: 15,
+		zoom: 6,
 		tileLayerName: 'mapbox.outdoors',
 		mapContainerId: 'map',
+		center: [47.50, -120],
 		mapBoxApiKey: 'pk.eyJ1Ijoicm9tYW5wIiwiYSI6ImF6eXlJTmcifQ.c8lx6qJoMa_apYeZvh34Sw'
 	},
 

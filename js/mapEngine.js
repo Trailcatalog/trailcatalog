@@ -3,9 +3,10 @@
 var mapEngine = {
 	options: {
 		center: [42.221256, 2.168770],
-		zoom: 15,
-		tileLayerName: 'runkeeper.4nc7syvi',
+		zoom: 6,
+		tileLayerName: 'mapbox.outdoors',
 		mapContainerId: 'map',
+		center: [47.50, -120],
 		mapBoxApiKey: 'pk.eyJ1IjoiYXJzZW55biIsImEiOiI3YkwwSGpFIn0.sz_Ar78nUbUZc6Ic1aNhkQ'
 	},
 	init: function(options) {
