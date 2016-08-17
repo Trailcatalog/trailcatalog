@@ -222,8 +222,7 @@
 	}
 
 	.button-delete {
-		background-image: url(../img/delete.svg);
-		display: none;
+		background-image: url(../img/delete.svg);		
 	}
 
 	.button-edit {

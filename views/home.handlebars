@@ -42,7 +42,7 @@
 				<a class='overlay' href='/edittrail/{{id}}'></a>
 			</div>
 			<div class='button-delete'>
-				<a class='overlay' href='/api/deletetrail/{{id}}'></a>
+				<a class='overlay' href='javascript:void(0);' data-id='{{id}}' data-hash='{{md5 id}}'></a>
 			</div>
 			<div class='info-elevation'>
 				{{numberCommas elevation}}'
@@ -97,6 +97,7 @@
 	
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="js/embedPopup.js"></script>
+	<script type="text/javascript" src="js/homeEngine.js"></script>
 
 
 

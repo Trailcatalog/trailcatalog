@@ -5,6 +5,7 @@ var Pool = require('pg').Pool;
 var wkx = require('wkx');
 var async = require('async');
 var request = require('request');
+var crypto = require('crypto');
 
 var dbConfig = {
 	user: 'trailcatalog', 
@@ -28,7 +29,7 @@ module.exports.addRoutes = function(app) {
 
 	ro.post('/api/saveTrail', saveTrail);
 	ro.post('/api/saveTrail/:id', updateTrail);
-	ro.get('/api/deletetrail/:id', deleteTrail);
+	ro.post('/api/deletetrail/:id', deleteTrail);
 	ro.get('/api/ele/', getGoogleElevation);
 
 	app.use('/', ro);
@@ -84,8 +85,8 @@ function staticTrail(req, res) {
 					id: trailData.trail.id,
 					elevation: trailData.trail.elevation,
 					length: trailData.trail.length,
-					trailData: "var trailData = " + JSON.stringify(trailData)					
-				};				
+					trailData: "var trailData = " + JSON.stringify(trailData)
+				};
 
 				if (trailData.coords != null) {
 					renderData.lat = trailData.coords.lat;
@@ -146,20 +147,27 @@ function editTrail(req, res) {
 
 function deleteTrail(req, res) {
 	var id = +req.params.id;
+	var hash = req.body.hash;
+	var md5result = crypto.createHash('md5').update(id.toString()).digest('hex');
 
-	pool.connect(function(err, client, done) {
-		if (err) {
-			return console.error('error fetching client from pool', err);
-		}
+	if (hash == md5result) {
+		pool.connect(function(err, client, done) {
+			if (err) {
+				return console.error('error fetching client from pool', err);
+			}
 
-		client.query('DELETE FROM trails WHERE id = $1', [id], function(err, result) {
-			done();
-			if (err)
-				res.send(err);
-			else
-				res.redirect('/');
+			client.query('DELETE FROM trails WHERE id = $1', [id], function(err, result) {
+				done();
+				if (err)
+					res.send(err);
+				else
+					res.redirect('/');
+			});
 		});
-	});
+	}
+	else {
+		res.send("Deliting error");	
+	}
 }
 
 function prepareTrailData(data) {
